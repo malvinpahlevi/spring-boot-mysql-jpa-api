@@ -1,5 +1,6 @@
 package com.yanmalvin.easynotesapp.controller;
 
+import com.yanmalvin.easynotesapp.exception.ResourceNotFoundException;
 import com.yanmalvin.easynotesapp.model.Note;
 import com.yanmalvin.easynotesapp.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,25 @@ public class NoteController {
 
     /*
     *  Create new note
+    *
+    * The @Valid annotation makes sure that the request body is valid. Remember, we had marked Note’s title and content with @NotBlank annotation in the Note model?
+    * If the request body doesn’t have a title or a content, then spring will return a 400 BadRequest error to the client.
     * */
     @PostMapping("/notes")
     public Note createNote(@Valid @RequestBody Note note){
         return noteRepository.save(note);
     }
+
+    /*
+    *  Get single note
+    * */
+    @GetMapping("/notes/{id}")
+    public Note getNoteById(@PathVariable(value = "id") Long noteId){
+        return noteRepository.findById(noteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Note", "id", noteId));
+    }
+
+
 
 
 
