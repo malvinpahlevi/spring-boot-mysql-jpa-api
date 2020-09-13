@@ -4,6 +4,7 @@ import com.yanmalvin.easynotesapp.exception.ResourceNotFoundException;
 import com.yanmalvin.easynotesapp.model.Note;
 import com.yanmalvin.easynotesapp.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -65,6 +66,18 @@ public class NoteController {
         Note updateNote = noteRepository.save(note);
         return updateNote;
 
+    }
+
+    /*
+    * Detele note
+    * */
+    public ResponseEntity<?> deleteNote(@PathVariable(value = "id") Long noteId){
+        Note note = noteRepository.findById(noteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Note", "id", noteId));
+
+        noteRepository.delete(note);
+
+        return ResponseEntity.ok().build();
     }
 
 }
